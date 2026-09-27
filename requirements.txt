@@ -1,0 +1,6 @@
+# Day-11 SVM/360 fisheye demo — Python deps (conda env "ai-lab" on course machine)
+cvat-sdk==2.75.0
+pillow
+numpy
+requests
+python-dotenv

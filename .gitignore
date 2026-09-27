@@ -1,0 +1,10 @@
+# build outputs + downloaded dataset subsets (NOT committed — datasets forbid re-hosting)
+data/
+labels/
+.env
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+
+# assets/picks/*.json ARE committed (locked file lists, no raw data)
