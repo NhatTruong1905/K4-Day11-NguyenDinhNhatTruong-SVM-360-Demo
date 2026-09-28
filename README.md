@@ -59,6 +59,21 @@ Task names: `Day11 A · Object · camera1 (FishEye8K)`, `Day11 B · Free-space �
 
 ## Build it
 
+**Windows (PowerShell):**
+```powershell
+.\run.ps1                 # download locked subset + build all 16 tasks + golden GT
+.\run.ps1 -Recreate       # delete existing Day11 tasks first
+.\run.ps1 -Only object    # one family {object,freespace,lines,ignore}
+```
+
+**Windows (CMD):**
+```cmd
+run.bat
+run.bat --recreate
+run.bat --only object
+```
+
+**Linux / macOS (Bash):**
 ```bash
 ./run.sh                 # download locked subset + build all 16 tasks + golden GT
 ./run.sh --recreate      # delete existing Day11 tasks first

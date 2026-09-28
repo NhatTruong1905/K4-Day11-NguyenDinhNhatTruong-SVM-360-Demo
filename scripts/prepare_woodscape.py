@@ -92,7 +92,7 @@ def write_lines_xml(path, frames):
         out.append(f'  <image id="{fid}" name="{escape(name)}" width="{w}" height="{h}">')
         for pts, line_type in shapes:
             ps = ";".join(f"{x:.2f},{y:.2f}" for x, y in pts)
-            out.append(f'    <polyline label="parking_curb" source="manual" occluded="0" '
+            out.append(f'    <polyline label="lane_line" source="manual" occluded="0" '
                        f'points="{ps}" z_order="0">')
             out.append(f'      <attribute name="line_type">{line_type}</attribute>')
             out.append('      <attribute name="visibility">visible</attribute>')
@@ -157,8 +157,8 @@ def build_camera(session, cam, ids):
         line_frames.append((fid, name, w, h, line_shapes))
         time.sleep(0.2)
 
-    (OUT / cam / "free_space.json").write_text(json.dumps(fs))
-    (OUT / cam / "ignore.json").write_text(json.dumps(ig))
+    (OUT / cam / "free_space.json").write_text(json.dumps(fs), encoding="utf-8")
+    (OUT / cam / "ignore.json").write_text(json.dumps(ig), encoding="utf-8")
     write_lines_xml(OUT / cam / "lines.xml", line_frames)
     nlines = sum(len(s) for *_, s in line_frames)
     print(f"{cam}: {len(fs['images'])} imgs | free_space={len(fs['annotations'])} "
@@ -166,7 +166,7 @@ def build_camera(session, cam, ids):
 
 
 def main():
-    load = json.loads((PICKS / "woodscape_picks.json").read_text())
+    load = json.loads((PICKS / "woodscape_picks.json").read_text(encoding="utf-8"))
     s = requests.Session(); s.headers.update(kaggle_headers())
     for cam in WS_CAMS:
         ids = load.get(cam, [])

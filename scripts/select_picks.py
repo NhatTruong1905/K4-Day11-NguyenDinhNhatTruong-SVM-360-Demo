@@ -122,7 +122,7 @@ def pick_woodscape():
                 time.sleep(0.15)
         picks[cam] = chosen[:N_PER_CAM]
         print(f"{cam}: {len(picks[cam])} picked")
-    (PICKS / "woodscape_picks.json").write_text(json.dumps(picks, indent=2))
+    (PICKS / "woodscape_picks.json").write_text(json.dumps(picks, indent=2), encoding="utf-8")
     print("wrote", PICKS / "woodscape_picks.json")
 
 
@@ -145,7 +145,7 @@ def pick_fisheye8k():
         names = sorted(by_cam.get(cam, []))
         picks[cam] = names[:N_PER_CAM]
         print(f"{cam}: {len(picks[cam])} picked of {len(names)}")
-    (PICKS / "fisheye8k_picks.json").write_text(json.dumps(picks, indent=2))
+    (PICKS / "fisheye8k_picks.json").write_text(json.dumps(picks, indent=2), encoding="utf-8")
     print("wrote", PICKS / "fisheye8k_picks.json")
 
 

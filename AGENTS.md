@@ -29,8 +29,14 @@ in `assets/picks/*.json` into `data/` (git-ignored).
 
 ## Build
 
+Linux / macOS:
 ```bash
 ./run.sh --recreate           # PY=/path/to/python ./run.sh --recreate  if needed
+```
+
+Windows (PowerShell):
+```powershell
+.\run.ps1 -Recreate
 ```
 
 Expected tail: `DONE. 16 tasks. Open:` followed by 16 task URLs. **Read those ids;
@@ -38,6 +44,12 @@ they change every `--recreate`. Never hard-code an id.**
 
 ## Verify (gate)
 
+Cross-platform (Windows / Linux / macOS):
+```bash
+python scripts/verify.py
+```
+
+Or via inline bash snippet (Linux/macOS):
 ```bash
 "$PY" - <<'PY'
 import sys; sys.path.insert(0,"scripts")

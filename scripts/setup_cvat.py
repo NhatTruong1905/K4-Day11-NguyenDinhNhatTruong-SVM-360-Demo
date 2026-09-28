@@ -72,16 +72,23 @@ def main():
         print("connected as", client.api_client.users_api.retrieve_self()[0].username)
         if args.recreate:
             delete_by_prefix(client, PREFIX)
+        existing_tasks = {}
+        if not args.recreate:
+            existing_tasks = {t.name: t.id for t in client.api_client.tasks_api.list(search=PREFIX, page_size=200)[0].results}
 
         results = []
         # Task A — FishEye8K object, per camera
         if want("object"):
             for cam in FE_CAMS:
+                tname = f"{PREFIX} A · Object · {cam} (FishEye8K)"
+                if tname in existing_tasks:
+                    print(f"skip {tname}: already exists (task #{existing_tasks[tname]})")
+                    continue
                 imgs = sorted((FE / cam / "images").glob("*.png"))
                 if not imgs:
                     print(f"skip object {cam}: no images (run prepare_fisheye8k.py)"); continue
                 results.append(create_task(
-                    client, f"{PREFIX} A · Object · {cam} (FishEye8K)",
+                    client, tname,
                     object_labels(cam), imgs, "COCO 1.0", FE / cam / "gt.json"))
 
         # Tasks B/C/D — WoodScape, per SVM camera
@@ -91,17 +98,29 @@ def main():
             if not imgs:
                 print(f"skip WoodScape {cam}: no images (run prepare_woodscape.py)"); continue
             if want("freespace"):
-                results.append(create_task(
-                    client, f"{PREFIX} B · Free-space · {nm} (WoodScape)",
-                    freespace_labels(cam), imgs, "COCO 1.0", WS / cam / "free_space.json"))
+                tname = f"{PREFIX} B · Free-space · {nm} (WoodScape)"
+                if tname in existing_tasks:
+                    print(f"skip {tname}: already exists (task #{existing_tasks[tname]})")
+                else:
+                    results.append(create_task(
+                        client, tname,
+                        freespace_labels(cam), imgs, "COCO 1.0", WS / cam / "free_space.json"))
             if want("lines"):
-                results.append(create_task(
-                    client, f"{PREFIX} C · Parking-Curb · {nm} (WoodScape)",
-                    line_labels(cam), imgs, "CVAT 1.1", WS / cam / "lines.xml"))
+                tname = f"{PREFIX} C · Lane-Line · {nm} (WoodScape)"
+                if tname in existing_tasks:
+                    print(f"skip {tname}: already exists (task #{existing_tasks[tname]})")
+                else:
+                    results.append(create_task(
+                        client, tname,
+                        line_labels(cam), imgs, "CVAT 1.1", WS / cam / "lines.xml"))
             if want("ignore"):
-                results.append(create_task(
-                    client, f"{PREFIX} D · Ignore · {nm} (WoodScape)",
-                    ignore_labels(cam), imgs, "COCO 1.0", WS / cam / "ignore.json"))
+                tname = f"{PREFIX} D · Ignore · {nm} (WoodScape)"
+                if tname in existing_tasks:
+                    print(f"skip {tname}: already exists (task #{existing_tasks[tname]})")
+                else:
+                    results.append(create_task(
+                        client, tname,
+                        ignore_labels(cam), imgs, "COCO 1.0", WS / cam / "ignore.json"))
 
         print(f"\nDONE. {len(results)} tasks. Open:")
         for task, gt in results:

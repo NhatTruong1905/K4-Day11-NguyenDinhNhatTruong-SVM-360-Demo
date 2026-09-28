@@ -41,6 +41,7 @@ def load_env(env_file: str | None = None) -> None:
 
 
 def cvat_conn() -> tuple[str, str, str]:
+    load_env()
     url = os.environ.get("CVAT_URL", "http://localhost:8080")
     user = os.environ.get("CVAT_ADMIN_USER", "admin")
     pw = os.environ.get("CVAT_ADMIN_PASSWORD", "")
@@ -50,6 +51,7 @@ def cvat_conn() -> tuple[str, str, str]:
 
 
 def kaggle_headers() -> dict:
+    load_env()
     tok = os.environ.get("KAGGLE_API_TOKEN", "").strip()
     if not tok:
         raise SystemExit("KAGGLE_API_TOKEN missing (put it in ../cvat/.env or ./.env; "
@@ -103,16 +105,17 @@ def freespace_labels(cam):
 
 
 def line_labels(cam):
-    """Task C — parking_line / curb polyline."""
-    return [{
-        "name": "parking_curb", "type": "polyline", "color": "#ffd400",
-        "attributes": [
-            _select("line_type", ["lane_marking", "curb"]),
-            _select("visibility", ["visible", "partially_occluded", "faded"]),
-            _checkbox("edge_zone"),
-            _select("camera_id", [cam]),
-        ],
-    }]
+    """Task C — lane_line polyline (lane markings & curb centerlines)."""
+    attrs = [
+        _select("line_type", ["lane_marking", "curb"]),
+        _select("visibility", ["visible", "partially_occluded", "faded"]),
+        _checkbox("edge_zone"),
+        _select("camera_id", [cam]),
+    ]
+    return [
+        {"name": "lane_line", "type": "polyline", "color": "#ffd400", "attributes": attrs},
+        {"name": "parking_curb", "type": "polyline", "color": "#ffd400", "attributes": attrs},
+    ]
 
 
 def ignore_labels(cam):

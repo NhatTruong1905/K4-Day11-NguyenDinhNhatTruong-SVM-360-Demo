@@ -35,7 +35,7 @@ def load_samples():
 
 
 def main():
-    picks = json.loads((PICKS / "fisheye8k_picks.json").read_text())
+    picks = json.loads((PICKS / "fisheye8k_picks.json").read_text(encoding="utf-8"))
     want = {name: cam for cam in FE_CAMS for name in picks.get(cam, [])}
     samples = {Path(s["filepath"]).name: s for s in load_samples()}
 
@@ -70,7 +70,7 @@ def main():
                 aid += 1
         gt = {"info": {"description": f"Day11 FishEye8K {cam} object GT"},
               "licenses": [], "images": images, "annotations": anns, "categories": cats}
-        (OUT / cam / "gt.json").write_text(json.dumps(gt))
+        (OUT / cam / "gt.json").write_text(json.dumps(gt), encoding="utf-8")
         print(f"{cam}: {len(images)} images, {len(anns)} boxes -> {OUT/cam/'gt.json'}")
 
 
